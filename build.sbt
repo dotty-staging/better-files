@@ -87,6 +87,14 @@ lazy val root = (project in file("."))
   .enablePlugins(GhpagesPlugin)
   .aggregate(core, akka, shapelessScanner, benchmarks)
 
+lazy val `dotty-community-build` = project
+  .in(file(".dotty-community-build"))
+  .aggregate(
+    core,
+    akka,
+    shapelessScanner
+  )
+
 lazy val docSettings = Seq(
   autoAPIMappings := true,
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(core, akka),
@@ -142,16 +150,7 @@ lazy val publishSettings = Seq(
   } yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)).toSeq
 )
 
-lazy val dottyVersion = dottyLatestNightlyBuild.get
-
 lazy val dottySettings = List(
-  scalaVersion := dottyVersion,
   libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
   scalacOptions := List("-language:Scala2")
- )
-
-TaskKey[Unit]("dottyCompile") := {
-  compile.in(core, Compile).value
-  compile.in(akka, Compile).value
-  compile.in(shapelessScanner, Compile).value
-}
+)
