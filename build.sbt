@@ -6,8 +6,8 @@ val checkFormat = taskKey[Unit]("Check all the source code which includes src, t
 
 lazy val commonSettings = Seq(
   organization := s"com.github.$username",
-  scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.11.12", "2.12.4"),
+  scalaVersion := "2.12.8",
+  crossScalaVersions := Seq("2.11.12", "2.12.8"),
   crossVersion := CrossVersion.binary,
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint"),
   scalacOptions --= ignoreScalacOptions(scalaVersion.value),
@@ -41,7 +41,7 @@ lazy val core = (project in file("core"))
     name := repo,
     description := "Simple, safe and intuitive I/O in Scala"
   )
-  .settings(dottySettings)
+  .settings(dottySettings: _*)
 
 lazy val akka = (project in file("akka"))
   .settings(commonSettings: _*)
