@@ -152,5 +152,5 @@ lazy val publishSettings = Seq(
 
 lazy val dottySettings = List(
   libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
-  scalacOptions := List("-language:Scala2")
+  scalacOptions ++= List("-language:Scala2Compat")
 )
