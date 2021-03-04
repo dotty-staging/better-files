@@ -151,6 +151,9 @@ lazy val publishSettings = Seq(
 )
 
 lazy val dottySettings = List(
-  libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
+  libraryDependencies := libraryDependencies.value.map { module =>
+    if (module.name != ScalaArtifacts.Scala3LibraryID) module.cross(CrossVersion.for3Use2_13)
+    else module
+  },
   scalacOptions ++= List("-source:3.0-migration")
 )
