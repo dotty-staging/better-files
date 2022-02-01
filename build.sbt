@@ -13,17 +13,17 @@ lazy val commonSettings = Seq(
   scalacOptions --= ignoreScalacOptions(scalaVersion.value),
   libraryDependencies += Dependencies.scalatest,
   updateImpactOpenBrowser := false,
-  compile in Compile := (compile in Compile).dependsOn(formatAll).value,
-  test in Test := (test in Test).dependsOn(checkFormat).value,
+  Compile / compile := (Compile / compile).dependsOn(formatAll).value,
+  Test / test := (Test / test).dependsOn(checkFormat).value,
   formatAll := {
-    (scalafmt in Compile).value
-    (scalafmt in Test).value
-    (scalafmtSbt in Compile).value
+    (Compile / scalafmt).value
+    (Test / scalafmt).value
+    (Compile / scalafmtSbt).value
   },
   checkFormat := {
-    (scalafmtCheck in Compile).value
-    (scalafmtCheck in Test).value
-    (scalafmtSbtCheck in Compile).value
+    (Compile / scalafmtCheck).value
+    (Test / scalafmtCheck).value
+    (Compile / scalafmtSbtCheck).value
   }
 )
 
@@ -97,10 +97,10 @@ lazy val `dotty-community-build` = project
 
 lazy val docSettings = Seq(
   autoAPIMappings := true,
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(core, akka),
+  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(core, akka),
   siteSourceDirectory := baseDirectory.value / "site",
-  siteSubdirName in ScalaUnidoc := "latest/api",
-  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
+  ScalaUnidoc/ siteSubdirName := "latest/api",
+  addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName),
   git.remoteRepo := s"git@github.com:$username/$repo.git"
 )
 
@@ -142,7 +142,7 @@ lazy val publishSettings = Seq(
               url = new URL(s"http://github.com/${username}"))
   ),
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   publishTo := Some(if (isSnapshot.value) Opts.resolver.sonatypeSnapshots else Opts.resolver.sonatypeStaging),
   credentials ++= (for {
     username <- sys.env.get("SONATYPE_USERNAME")
