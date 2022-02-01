@@ -151,6 +151,5 @@ lazy val publishSettings = Seq(
 )
 
 lazy val dottySettings = List(
-  libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
   scalacOptions ++= List("-source:3.0-migration")
 )
