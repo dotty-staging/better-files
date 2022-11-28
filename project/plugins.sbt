@@ -9,3 +9,5 @@ addSbtPlugin("org.xerial.sbt"            % "sbt-sonatype"            % "2.3")
 addSbtPlugin("com.codacy"                % "sbt-codacy-coverage"     % "1.3.12")
 // addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"            % "0.1.6")
 addSbtPlugin("com.geirsson"              % "sbt-scalafmt"            % "1.5.1")
+
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
