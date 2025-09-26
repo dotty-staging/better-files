@@ -19,7 +19,7 @@ object Dsl {
   def cwd: File =
     pwd
 
-  val `..` : File => File =
+  val `..` : File => File | Null =
     _.parent
 
   val `.` : File => File =

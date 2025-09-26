@@ -48,7 +48,7 @@ abstract class FileMonitor(val root: File, maxDepth: Int) extends File.Monitor {
       if (file.isDirectory) {
         file.walk(depth).filter(f => f.isDirectory && f.exists)
       } else {
-        when(file.exists)(file.parent).iterator // There is no way to watch a regular file; so watch its parent instead
+        when(file.exists)(file.parent.nn).iterator // There is no way to watch a regular file; so watch its parent instead
       }
     try {
       toWatch.foreach(f => Try[Unit](f.register(service)).recover(PartialFunction.fromFunction(onException)).get)

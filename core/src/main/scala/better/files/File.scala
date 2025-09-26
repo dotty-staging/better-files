@@ -113,7 +113,7 @@ class File private (val path: Path)(implicit val fileSystem: FileSystem = path.g
     * @see parentOption
     * @return
     */
-  def parent: File =
+  def parent: File | Null =
     parentOption.orNull
 
   /**
@@ -160,7 +160,7 @@ class File private (val path: Path)(implicit val fileSystem: FileSystem = path.g
     } else if (asDirectory) {
       createDirectories()(attributes)
     } else {
-      if (createParents) parent.createDirectories()(attributes)
+      if (createParents) parent.nn.createDirectories()(attributes)
       try {
         createFile()(attributes)
       } catch {
@@ -191,10 +191,10 @@ class File private (val path: Path)(implicit val fileSystem: FileSystem = path.g
     path.resolveSibling(name)
 
   def isSiblingOf(sibling: File): Boolean =
-    sibling.isChildOf(parent)
+    sibling.isChildOf(parent.nn)
 
   def siblings: Files =
-    parent.list.filterNot(_ == this)
+    parent.nn.list.filterNot(_ == this)
 
   def isChildOf(parent: File): Boolean =
     parent.isParentOf(this)
@@ -1151,7 +1151,7 @@ class File private (val path: Path)(implicit val fileSystem: FileSystem = path.g
     ): destination.type = {
     for {
       zipFile <- new ZipFile(toJava, charset).autoClosed
-      entry   <- zipFile.entries().asScala if zipFilter(entry)
+      entry   <- { val entries = zipFile.entries(); entries.asScala } if zipFilter(entry)
     } entry.extractTo(destination, zipFile.getInputStream(entry))
     destination
   }
@@ -1224,7 +1224,7 @@ class File private (val path: Path)(implicit val fileSystem: FileSystem = path.g
       output <- newZipOutputStream(File.OpenOptions.default, charset).withCompressionLevel(compressionLevel).autoClosed
       input  <- files
       file   <- input.walk()
-      name = input.parent.relativize(file)
+      name = input.parent.nn.relativize(file)
     } output.add(file, name.toString)
     this
   }
@@ -1372,7 +1372,7 @@ object File {
     } else if (anchor.isDirectory) {
       anchor / p.toString
     } else {
-      anchor.parent / p.toString
+      anchor.parent.nn / p.toString
     }
   }
 
